@@ -7,19 +7,20 @@ import { axiosInstance } from "@/lib/axiosInstances";
 import { Button } from "@/components/ui/button";
 
 export default function UploadFileSection() {
-  const [fileName, setFileName] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<File | null>(null);
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
       const file = files[0];
-      setFileName(file.name);
+      setFileName(file);
     }
   };
 
   const handleUploadFile = async () => {
     const response = await axiosInstance({
+      url: "/aws/upload",
       method: "POST",
-      data: { fileName },
+      data: { fileName: fileName },
     });
     const result = await response.data;
   };

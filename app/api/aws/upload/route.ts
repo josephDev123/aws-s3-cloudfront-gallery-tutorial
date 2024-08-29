@@ -4,22 +4,23 @@ import {
   PutObjectCommandInput,
 } from "@aws-sdk/client-s3";
 
-export async function GET(req: Request) {
-  // const query = new URL(req.url).searchParams;
-  const query = new URL(req.url).searchParams.get("fileName");
+export async function POST(req: Request) {
+  // const query = new URL(req.url).searchParams.get("fileName");
+  const body = await req.json();
+  const fileName = body.fileName;
 
   try {
     const s3Client = new S3Client({
       region: "eu-north-1",
       credentials: {
-        accessKeyId: "",
-        secretAccessKey: "",
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
       },
     });
 
     const params: PutObjectCommandInput = {
       Bucket: "aws-s3-cloudfront-testing-bucket",
-      Key: `testing/${query}`,
+      Key: `testing/${fileName}`,
     };
     const command = new PutObjectCommand(params);
     const response = await s3Client.send(command);
