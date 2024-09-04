@@ -7,7 +7,7 @@ import { axiosInstance } from "@/lib/axiosInstances";
 import { Button } from "@/components/ui/button";
 
 export default function UploadFileSection() {
-  const [fileName, setFileName] = useState<File | null>(null);
+  const [fileName, setFileName] = useState<File>(null!);
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
@@ -17,10 +17,12 @@ export default function UploadFileSection() {
   };
 
   const handleUploadFile = async () => {
+    const formData = new FormData();
+    formData.append("file", fileName);
     const response = await axiosInstance({
       url: "/aws/upload",
       method: "POST",
-      data: { fileName: fileName },
+      data: formData,
     });
     const result = await response.data;
   };
